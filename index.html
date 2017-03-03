@@ -1,0 +1,663 @@
+ <script src = "https://code.jquery.com/jquery-2.2.4.min.js">  </script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+<!--depadancy UI Tempalte Engine-->
+<script src="jsrender.js"></script>
+
+<!--Tailori Plugin-->
+<script src = "jquery.tds.js">  </script>
+ <script>
+var obj =null;
+function GetSummary(){
+	console.log( obj.Summary());
+}
+
+function GetProduct(){
+	obj.Product($("#product-info").val());
+}
+
+	$(document).ready(function () {
+		//alert("hi")
+
+		
+		
+		 obj = $("#div-1").tailori(
+		{
+			'Product':'MEN-SHIRT',   //Product i.e men shirt,women shirt, men suit, etc
+			'ProductTemplate':'#theTmpl', //Tempalte id for Product
+			'ImageSource':'#img-div', //Container Id for place inages
+			'ServiceUrl':'http://textronic.online/WEB_API',
+			'AutoSpecific':false, //Auto specific view after selecting any feature
+			'AutoAlignment':false, //Auto alignment set according to selected element
+			'Monogram':false, //If monogram 
+			'MonogramTemplate':'#theTmplm', //Tempalte id for Monogram UI
+			'MonogramPlace':'#monoplace', // html containter for Monogram
+			'FeatureCallback': function(){
+				alert($(this).attr("data-tds-key"));
+				
+				console.log(abc);
+				
+			},
+			'RenderCallback':function(a){
+				console.log(a);
+				//console.log(b);
+			}
+			//OptionCallback
+		});
+
+		//obj.Product("men-suit");		//Change Product
+		//obj.Summary();				//For get the summery of product
+		//obj.Texture(this.id);			// Set Texture to product i.e fabric id or color value (#ff0000,rgb(255, 0, 0),red,hsl(0, 100%, 50%))
+		//obj.ContrastTexture(this.id);	// Set Texture for contrast
+		//obj.Texture();				// Get Texture of Product
+		//obj.ContrastTexture();		// Get Texture of selected contrast
+		//obj.SpecificRender(true);		// Get if true Specific Rendered Image else full rendered image
+		//obj.ResetContrast();
+		//obj.ResetProduct();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		//obj.Texture("red");	
+		//obj.tailori("SetFabric","ABC");//alert("bye")
+		//
+	//	obj.ChangeLook("");
+	//	obj.ApplyTexture(this.id);	
+	//	obj.ApplyContrastTexture(this.id);
+		
+		
+		//obj._set();
+		$.getJSON({
+				url: "http://172.16.10.114/WEB_API/v1/Swatches",				
+				success: function (data) {				
+				$("#fabrics").empty();
+				//console.log(data);
+					for (var url in data) {
+					$("#fabrics").append('<tr id="'+data[url]+'" ><td><span class="glyphicon glyphicon-chevron-right"></span><a href="#">'+url+'</a></td></tr>');
+					$("#fabrics1").append('<tr id="'+data[url]+'" ><td><span class="glyphicon glyphicon-chevron-right"></span><a href="#">'+url+'</a></td></tr>');					
+					}
+					$("#fabrics tr").click(function(){
+				//		alert(this.id);
+				//obj.Summary();
+				//obj.ContrastTexture(this.id);
+				//obj.Product("men-suit");
+				obj.Texture(this.id);	
+			});
+			
+			$("#fabrics1 tr").click(function(){
+				//		alert(this.id);
+				//obj.Summary();
+				obj.ContrastTexture(this.id);
+				//obj.Product("men-suit");
+				//obj.Texture(this.id);	
+			});
+			
+				},
+				fail: function () {}
+			});
+
+			
+	});
+
+ </script>
+<script id="theTmpl2" type="text/x-jsrender">
+<ul>
+	{{for Product}}
+      <li ><img style="max-width:30px;" src="{{:ImageSource}}">{{:Name}} is  <b>{{:Id}} </b></li>
+	{{/for}}
+</ul>
+
+<ul>
+	{{for Product}}     
+		<ul class="productlist" data-key="">
+			{{for Options}}
+				<li><img style="max-width:30px;" src="{{:ImageSource}}">{{:Name}} is  <b>{{:Id}}</b></li>
+			{{/for}}
+		</ul>
+	{{/for}}  
+</ul>
+
+<ul>
+	{{for Product}}     
+		<ul>
+			{{for Options}}
+				<ul>
+					{{for Features}}
+						
+						<li style="cursor: pointer;"  >
+                    <img alt="classic" class="collar_image" name="Classic Collar" src="{{:ImageSource}}" title="classic">
+                    <!-- <table style="color: rgb(102, 102, 102);" class="table_center_element" border="0"><tbody><tr><td>Classic Collar</td></tr></tbody></table> -->
+                    <p class="pFabricName" style="color: #666666;">{{:Name}}</p>
+                  </li>
+						
+					{{/for}}
+				</ul>
+			{{/for}}
+		</ul>
+	{{/for}}
+</ul>
+
+</script>
+<script id="theTmpl" type="text/x-jsrender">
+		
+<div class="panel-group" id="accordion2">
+	{{for Product}}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{:Id}}">
+					 <img style="max-width:30px;" src="{{:ImageSource}}">{{:Name}}
+					</a>
+				</h4>
+			</div>
+			<div id="collapse{{:Id}}" class="panel-collapse collapse">
+				<div class="panel-body">
+					<table class="table">
+						{{for Options}}
+						
+							{{for Features}}		
+								<tr id="{{:Id}}">
+									<td>
+										<span class="glyphicon glyphicon-chevron-right"></span><a href="#">{{:Name}}</a>
+									</td>
+								</tr>
+							{{/for}}
+							
+							
+							
+						{{/for}}
+						{{for Contrasts}}		
+								<tr id="{{:Id}}">
+									<td>
+										<span class="glyphicon glyphicon-chevron-right"></span><a href="#">{{:Name}}</a>
+									</td>
+								</tr>
+							{{/for}}
+					</table >
+				</div>
+			</div>
+		</div>
+	{{/for}}
+</div>
+
+</script>
+
+<script id="theTmpl1" type="text/x-jsrender">
+	<div class="col-md-12">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+					<ul class="nav nav-tabs">
+						{{for Product}}                            
+							<li><a href="#tab{{:Id}}" data-toggle="tab"><img style="max-width:30px;" src="{{:ImageSource}}">{{:Name}}</a></li>                          
+						{{/for}}   
+					</ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+					{{for Product}}					
+                        <div class="tab-pane fade " id="tab{{:Id}}">
+							<ul class="list-group">
+							{{for Options}}
+								{{for Features}}
+									<li class="list-group-item" id="{{:Id}}">{{:Name}}</li>						
+								{{/for}}   
+							{{/for}}   
+							</ul>
+						</div>
+					{{/for}}                           
+				</div>
+			</div>
+		</div>
+	</div>	
+</script>
+
+<script id="theTmplm" type="text/x-jsrender">
+
+
+<div class="panel panel-default ">
+						<div class="panel-heading" role="tab" id="headingMonoConfig">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion1" href="#collapseMonoConfig" aria-expanded="true" aria-controls="collapseMonoConfig" class="">Monogram Configuration</a>
+							</h4>
+						</div>
+						<div id="collapseMonoConfig" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingMonoConfig" aria-expanded="true" style="">
+							<div class="panel-body">
+								<div class="form-group" id="Monogram-feature-types">
+									<div aria-multiselectable="true" role="tablist" id="Div1" class="panel-group">
+										<div id="monogram-preview-img">
+											<img id="monogram-preview" src="preview.png" data-tds-moption="preview" alt="" class="img-rounded" style="width: 100%">
+										</div>
+										<div class="control-group">
+											<label for="monogram-text" class="control-label"> Monogram
+												Text</label> <input class="form-control" id="monogram-text" data-tds-moption="text" type="text">
+										</div>
+										<div class="control-group">
+											<label for="monogram-placement" class="control-label">Monogram Placement</label> 
+											<select class="form-control" id="monogram-placement">											
+											{{for MonogramPlacement}}                            					                     
+												<option id="{{:Id}}">{{:Name}}</option>
+											{{/for}}																					
+											</select>
+										</div>
+										
+										<div class="control-group">
+											<label for="monogram-font" class="control-label"> Monogram Font</label>
+											<ul class="the-icons clearfix" id="monogram-font">
+											
+											{{for MonogramFont}}                            
+											<li id="{{:Id}}"><img class="img-polaroid" src="image/ProductImages/129b90f7-fac2-44f2-a8b5-707c263faa75.jpg">{{:Name}}</li>
+											
+											{{/for}}																															
+											</ul>
+										</div>
+
+										<div class="control-group">
+											<label for="monogram-color" class="control-label"> Monogram
+												Color</label>
+											<ul class="the-icons clearfix" id="monogram-color">
+											{{for MonogramColor}}                            
+											<li id="{{:Id}}"><img class="img-polaroid" src="image/ProductImages/129b90f7-fac2-44f2-a8b5-707c263faa75.jpg">{{:Name}}</li>											
+											{{/for}}																															
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+</script>
+ 
+  <html> 
+	<body> 
+	
+		<div class="container-fluid">
+		
+			<div class="row" >
+				<div  class="col-sm-12 col-md-12" > 
+				<a data-tds-alignment="previous" href="#"><span class="glyphicon glyphicon-chevron-left"></span>Previous</a> | 
+	<a data-tds-alignment="face" href="#">Face</a>  |
+	<a data-tds-alignment="back" href="#">Back</a>  |  	
+	<a data-tds-alignment="faceopen" href="#">Face Open</a>  |
+	<a data-tds-alignment="backopen" href="#">Back Open</a>  |  
+	
+	<a data-tds-alignment="next" href="#">Next <span class="glyphicon glyphicon-chevron-right"></span> </a>
+					<button type="button" onclick="GetSummary()" class="btn btn-default"><span class="glyphicon glyphicon-list-alt">Summary</button>
+				
+				
+				<input type="text" id="product-info"/>
+				
+				<button type="button" onclick="GetProduct()" class="btn btn-default">Change Product</button>
+				
+				</div>
+			<div  class="row">
+			<div  class="col-sm-2 col-md-2" id = "div-1"></div>
+			<div class="col-sm-2 col-md-2"> 
+				<table class="table" style="height: 300px; display: block; overflow: auto;"><tbody id="fabrics"></tbody></table>				
+				<table class="table"  style="height: 300px; display: block; overflow: auto;"><tbody id="fabrics1"></tbody></table>
+			</div>
+			<div class="col-sm-3 col-md-3" id="monoplace" >
+				
+			</div>
+			
+			<div class="col-sm-3 col-md-3" id="img-div"></div>
+		</div>
+		</div>
+
+
+
+
+	<!--		<div class="row" id = "div-1">
+		
+			</div>
+			
+		<div class="row">
+		
+			<div  id="img-div" class="col-sm-6 col-md-6"> </div>
+		
+		</div>-->
+	
+	
+	</div>
+	
+		
+	
+	
+	</body>
+</html>
+ 
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+ <Style>
+ #img-div{
+//	 display:;
+	// position:absolute;
+ }
+ #img-div img{
+	 position:absolute;
+	  width: 100%;
+ }
+ .the-icons li {
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    float: left;
+    font-size: 12px;
+    height: 110px;
+    line-height: 1.25;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+    width: 100px;
+}
+ body{margin-top:50px;}
+.glyphicon { margin-right:10px; }
+.panel-body { padding:0px; }
+.panel-body table tr td { padding-left: 15px }
+.panel-body .table {margin-bottom: 0px; }
+
+
+.panel.with-nav-tabs .panel-heading{
+    padding: 5px 5px 0 5px;
+}
+.panel.with-nav-tabs .nav-tabs{
+	border-bottom: none;
+}
+.panel.with-nav-tabs .nav-justified{
+	margin-bottom: -1px;
+}
+/********************************************************************/
+/*** PANEL DEFAULT ***/
+.with-nav-tabs.panel-default .nav-tabs > li > a,
+.with-nav-tabs.panel-default .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li > a:focus {
+    color: #777;
+}
+.with-nav-tabs.panel-default .nav-tabs > .open > a,
+.with-nav-tabs.panel-default .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-default .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li > a:focus {
+    color: #777;
+	background-color: #ddd;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.active > a,
+.with-nav-tabs.panel-default .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.active > a:focus {
+	color: #555;
+	background-color: #fff;
+	border-color: #ddd;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #777;   
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #ddd;
+}
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-default .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #555;
+}
+/********************************************************************/
+/*** PANEL PRIMARY ***/
+.with-nav-tabs.panel-primary .nav-tabs > li > a,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > .open > a,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+	color: #fff;
+	background-color: #3071a9;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+	color: #428bca;
+	background-color: #fff;
+	border-color: #428bca;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #428bca;
+    border-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #fff;   
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    background-color: #4a9fe9;
+}
+/********************************************************************/
+/*** PANEL SUCCESS ***/
+.with-nav-tabs.panel-success .nav-tabs > li > a,
+.with-nav-tabs.panel-success .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li > a:focus {
+	color: #3c763d;
+}
+.with-nav-tabs.panel-success .nav-tabs > .open > a,
+.with-nav-tabs.panel-success .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-success .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li > a:focus {
+	color: #3c763d;
+	background-color: #d6e9c6;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.active > a,
+.with-nav-tabs.panel-success .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.active > a:focus {
+	color: #3c763d;
+	background-color: #fff;
+	border-color: #d6e9c6;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #3c763d;   
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #d6e9c6;
+}
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-success .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #3c763d;
+}
+/********************************************************************/
+/*** PANEL INFO ***/
+.with-nav-tabs.panel-info .nav-tabs > li > a,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+	color: #31708f;
+}
+.with-nav-tabs.panel-info .nav-tabs > .open > a,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+	color: #31708f;
+	background-color: #bce8f1;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:focus {
+	color: #31708f;
+	background-color: #fff;
+	border-color: #bce8f1;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #31708f;   
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #bce8f1;
+}
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #31708f;
+}
+/********************************************************************/
+/*** PANEL WARNING ***/
+.with-nav-tabs.panel-warning .nav-tabs > li > a,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:focus {
+	color: #8a6d3b;
+}
+.with-nav-tabs.panel-warning .nav-tabs > .open > a,
+.with-nav-tabs.panel-warning .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li > a:focus {
+	color: #8a6d3b;
+	background-color: #faebcc;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a,
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.active > a:focus {
+	color: #8a6d3b;
+	background-color: #fff;
+	border-color: #faebcc;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #8a6d3b; 
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #faebcc;
+}
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-warning .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #8a6d3b;
+}
+/********************************************************************/
+/*** PANEL DANGER ***/
+.with-nav-tabs.panel-danger .nav-tabs > li > a,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:focus {
+	color: #a94442;
+}
+.with-nav-tabs.panel-danger .nav-tabs > .open > a,
+.with-nav-tabs.panel-danger .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li > a:focus {
+	color: #a94442;
+	background-color: #ebccd1;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a,
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.active > a:focus {
+	color: #a94442;
+	background-color: #fff;
+	border-color: #ebccd1;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #f2dede; /* bg color */
+    border-color: #ebccd1; /* border color */
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #a94442; /* normal text color */  
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #ebccd1; /* hover bg color */
+}
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-danger .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff; /* active text color */
+    background-color: #a94442; /* active bg color */
+}
+
+ </Style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
