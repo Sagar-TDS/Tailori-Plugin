@@ -197,8 +197,8 @@
 		},
 
 		_createRenderObject: function (key, value) {
-			this._CurrentBlockedFeatures = Array();
-			this._CurrentBlockedDetails = Array();
+			//this._CurrentBlockedFeatures = Array();
+			//this._CurrentBlockedDetails = Array();
 			//$("[data-tds-element]").show();
 
 
