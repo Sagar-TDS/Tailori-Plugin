@@ -60,7 +60,7 @@
 			ImageSource: undefined,
 			ProductTemplate: undefined,
 			MonogramTemplate: undefined,
-			ServiceUrl: "http://localhost:57401",
+			ServiceUrl: "https://localhost:57401",
 			AutoSpecific: true,
 			AutoAlignment: true,
 			Monogram: true,
@@ -363,7 +363,7 @@
 				this._createUrl();
 			} else
 				$.getJSON({
-					url: "http://textronic.online/api_stylior/v1/imgs?" + this._Url,
+					url: "https://textronic.online/api_stylior/v1/imgs?" + this._Url,
 					context: this,
 					success: function (data) {
 						//console.log(data);
