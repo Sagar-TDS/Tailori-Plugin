@@ -54,21 +54,27 @@
 		_SpacificLink: new Object(),
 		_SpecificViewOf: "",
 		_IsSpecific: false,
+		_ProductData: [],
 
 		defaults: {
 			Product: "Men-Shirt",
-			ImageSource: undefined,
-			ProductTemplate: undefined,
-			MonogramTemplate: undefined,
+			ImageSource: "",
+			ProductTemplate: "",
+			OptionTemplate: "",
+			OptionsPlace: "",
+			IsOptionVisible: false,
+			FeatureTemplate: "",
+			FeaturesPlace: "",
+			MonogramTemplate: "",
 			ServiceUrl: "http://localhost:57401",
 			AutoSpecific: true,
 			AutoAlignment: true,
 			Monogram: true,
-			ProductCallback: undefined,
-			OptionCallback: undefined,
-			FeatureCallback: undefined,
-			ContrastCallback: undefined,
-			RenderCallback: undefined
+			ProductCallback: "",
+			OptionCallback: "",
+			FeatureCallback: "",
+			ContrastCallback: "",
+			RenderCallback: ""
 		},
 
 		init: function () {
@@ -76,7 +82,7 @@
 			//alert(this.config["Product"]);
 			//this._privateMethod();
 			//this._setCofiguration(this.config["Product"]  this.Option("Product"), this.config["ProductTemplate"]);
-			this._setCofiguration(this.Option("Product"), this.Option("ProductTemplate"));
+			this._setCofiguration(this.Option("Product"));
 			return this;
 		},
 
@@ -85,8 +91,10 @@
 			alert("private")
 		},
 
-		_setCofiguration: function (type, template) {
-			var templateId = template;
+		_setCofiguration: function (type) {
+			var templateId = this.Option("ProductTemplate");
+			if (templateId == "")
+				return;
 			$.getJSON({
 				url: this.Option("ServiceUrl") + "/api/products/" + type,
 				context: this,
@@ -96,22 +104,17 @@
 					that._Alignments = data.Alignments;
 					that._SpacificDisplay = data.SpecificDisplay;
 					that._SpacificLink = data.SpecificLink;
-					data.SpecificLink = null;
-					data.SpecificDisplay = null;
-					data.Alignments = null;
-					console.log(data.Product);
+					that._ProductData = data.Product;
+					//data.SpecificLink = null;
+					//data.SpecificDisplay = null;
+					//data.Alignments = null;
+					//data = null //
+					//console.log(data.Product);
 					var template = $.templates(templateId);
-					var htmlOutput = template.render(data);
+					var htmlOutput = template.render({
+							"Product": that._ProductData
+						});
 					this.$element.html(htmlOutput);
-
-					for (var dataIndex = 0; dataIndex < data.Product.length; dataIndex++) {
-						that._RenderObject[data.Product[dataIndex].Id] = {
-							Id: "",
-							Swatch: "",
-							Color: "",
-							Contrast: []
-						};
-					}
 
 					for (var key in this._Alignments) {
 						if (this._Alignments[key].toLowerCase() == "face")
@@ -127,19 +130,21 @@
 						that._MonogramFont = $('[data-tds-mfont]:eq(0)').attr("data-tds-mfont");
 						that._MonogramColor = $('[data-tds-mcolor]:eq(0)').attr("data-tds-mcolor");
 
-						$("[data-tds-mplace]").on("click", function () {
+						$("body").on("click", "[data-tds-mplace]", function () {
 							that._MonogramPlacement = $(this).data("tds-mplace");
 							if (that._MonogramPlacement !== "" && that._MonogramFont !== "" && that._MonogramColor !== "" && that._MonogramText !== "")
 								that._createUrl();
 						});
 
-						$("[data-tds-mfont]").on("click", function () {
+						$("body").on("click", "[data-tds-mfont]", function () {
+
 							that._MonogramFont = $(this).data("tds-mfont");
 							if (that._MonogramPlacement !== "" && that._MonogramFont !== "" && that._MonogramColor !== "" && that._MonogramText !== "")
 								that._createUrl();
 						});
 
-						$("[data-tds-mcolor]").on("click", function () {
+						$("body").on("click", "[data-tds-mcolor]", function () {
+
 							that._MonogramColor = $(this).data("tds-mcolor");
 							if (that._MonogramPlacement !== "" && that._MonogramFont !== "" && that._MonogramColor !== "" && that._MonogramText !== "")
 								that._createUrl();
@@ -152,7 +157,9 @@
 
 						});
 					}
-					$("[data-tds-element]").on("click", function () {
+
+					$("body").on("click", "[data-tds-element]", function () {
+
 						if ($(this).hasClass("block")) {
 							console.log("feature is block");
 						} else {
@@ -162,23 +169,102 @@
 
 						var callback = that.Option("FeatureCallback");
 						if (typeof callback == 'function')
-							callback.call(this);
+							callback.call(this, $(this).data("tds-element"));
 					});
 
-					$("[data-tds-option]").on("click", function () {
+					$("body").on("click", "[data-tds-option]", function () {
+						var productId = $(this).data("tds-key");
+						var optionId = $(this).data("tds-option");
+						var featureTmpl = that.Option("FeatureTemplate");
+						var featureUiId = that.Option("FeaturesPlace");
+						if (featureTmpl != "" && featureUiId != "" && productId !== undefined && productId !== "" && optionId !== undefined && optionId !== "") {
+							var features = null;
+
+							for (var dataIndex = 0; dataIndex < that._ProductData.length; dataIndex++)
+								if (that._ProductData[dataIndex].Id == productId)
+									for (var dataIndex1 = 0; dataIndex1 < that._ProductData[dataIndex].Options.length; dataIndex1++)
+										if (that._ProductData[dataIndex].Options[dataIndex1].Id == optionId) {
+											features = that._ProductData[dataIndex].Options[dataIndex1].Features;
+											break;
+										}
+							if (features != null) {
+								var template1 = $.templates(featureTmpl);
+								var htmlOutput1 = template1.render({
+										"Features": features
+									});
+								$(featureUiId).html(htmlOutput1);
+							}
+						}
 
 						var callback = that.Option("OptionCallback");
 						if (typeof callback == 'function')
-							callback.call(this);
+							callback.call(this, $(this).data("tds-option"));
 					});
 
-					$("[data-tds-product]").on("click", function () {
+					$("body").on("click", "[data-tds-product]", function () {
+						if (that.Option("IsOptionVisible")) {
+							var productId = $(this).data("tds-product");
+							var optionTmpl = that.Option("OptionTemplate");
+							var optionUiId = that.Option("OptionsPlace");
+							if (optionTmpl != "" && optionUiId != "" && productId !== undefined && productId !== "") {
+								var options = null;
+								for (var dataIndex = 0; dataIndex < that._ProductData.length; dataIndex++)
+									if (that._ProductData[dataIndex].Id == productId) {
+										options = that._ProductData[dataIndex].Options;
+										break;
+									}
+								if (options != null) {
+									if (options.length > 1) {
+										var template1 = $.templates(optionTmpl);
+										var htmlOutput1 = template1.render({
+												"Options": options
+											});
+										$(optionUiId).html(htmlOutput1);
+									} else {
+										var features = options[0].Features;
+
+										if (features != null) {
+											var featureTmpl = that.Option("FeatureTemplate");
+											var featureUiId = that.Option("FeaturesPlace");
+											var template1 = $.templates(featureTmpl);
+											var htmlOutput1 = template1.render({
+													"Features": features
+												});
+											$(featureUiId).html(htmlOutput1);
+										}
+									}
+								}
+							}
+						} else {
+							var productId = $(this).data("tds-product");
+							var featureTmpl = that.Option("FeatureTemplate");
+							var featureUiId = that.Option("FeaturesPlace");
+							if (featureTmpl != "" && featureUiId != "" && productId !== undefined && productId !== "") {
+								var features = [];
+
+								for (var dataIndex = 0; dataIndex < that._ProductData.length; dataIndex++)
+									if (that._ProductData[dataIndex].Id == productId)
+										for (var dataIndex1 = 0; dataIndex1 < that._ProductData[dataIndex].Options.length; dataIndex1++) {
+											features = features.concat(that._ProductData[dataIndex].Options[dataIndex1].Features);
+											break;
+										}
+								if (features != null) {
+									var template1 = $.templates(featureTmpl);
+									var htmlOutput1 = template1.render({
+											"Features": features
+										});
+									$(featureUiId).html(htmlOutput1);
+								}
+							}
+						}
+
 						var callback = that.Option("ProductCallback");
 						if (typeof callback == 'function')
-							callback.call(this);
+							callback.call(this, $(this).data("tds-product"));
 					});
 
-					$("[data-tds-contrast]").on("click", function () {
+					$("body").on("click", "[data-tds-contrast]", function () {
+
 						that._setContrast($(this).attr("data-tds-key"), $(this).attr("data-tds-contrast"));
 						var callback = that.Option("ContrastCallback");
 						if (typeof callback == 'function')
@@ -203,28 +289,38 @@
 
 
 			if (key === undefined) {
-				for (var key in this._RenderObject) {
-					var element = $("[data-tds-key='" + key + "']:eq(0)").attr("data-tds-element");
-					if(element === undefined)
-					continue;
-					this._RenderObject[key].Id = element;
-					if (this._BlockedFeatures.hasOwnProperty(element)) {
-						for (var blockedFeature in this._BlockedFeatures[element]) {
-							var feature = this._BlockedFeatures[element][blockedFeature];
-							this._CurrentBlockedFeatures.push();
-							$("[data-tds-element='" + feature + "']").addClass("block");
-						}
-					}
-
-					if (this._BlockedDetails.hasOwnProperty(element)) {
-						for (var blockedDetail in this._BlockedDetails[element]) {
-							var detail = this._BlockedDetails[element][blockedDetail];
-							this._CurrentBlockedDetails.push(detail);
-							$("[data-tds-key='" + detail + "']").addClass("block");
-						}
-					}
-
+				/*for (var key in this._RenderObject) {
+				var element = $("[data-tds-key='" + key + "']:eq(0)").attr("data-tds-element");
+				if(element === undefined)
+				continue;
+				this._RenderObject[key].Id = element;
+				if (this._BlockedFeatures.hasOwnProperty(element)) {
+				for (var blockedFeature in this._BlockedFeatures[element]) {
+				var feature = this._BlockedFeatures[element][blockedFeature];
+				this._CurrentBlockedFeatures.push();
+				$("[data-tds-element='" + feature + "']").addClass("block");
 				}
+				}
+
+				if (this._BlockedDetails.hasOwnProperty(element)) {
+				for (var blockedDetail in this._BlockedDetails[element]) {
+				var detail = this._BlockedDetails[element][blockedDetail];
+				this._CurrentBlockedDetails.push(detail);
+				$("[data-tds-key='" + detail + "']").addClass("block");
+				}
+				}
+
+				}*/
+
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++) {
+					this._RenderObject[this._ProductData[dataIndex].Id] = {
+						Id: this._ProductData[dataIndex].Options[0].Features[0].Id,
+						Swatch: "",
+						Color: "",
+						Contrast: []
+					};
+				}
+
 			} else {
 
 				var oldValue = this._RenderObject[key].Id;
@@ -339,8 +435,13 @@
 
 				//	console.log(this._Url);
 			}
-			if(this._Url === "")
+			if (this._Url === "" && !this._IsSpecific)
 				return;
+			else if (this._Url === "" && this._IsSpecific) {
+				this._IsSpecific = false;
+				this._createUrl();
+				return;
+			}
 			if (this._Swatch !== "")
 				this._Url += "/Swatch=" + this._Swatch + "/";
 			else if (this._Color !== "")
@@ -588,9 +689,33 @@
 		},
 
 		ResetProduct: function () {
+			this._CurrentBlockedFeatures = Array();
+			this._CurrentBlockedDetails = Array();
 			this._createRenderObject();
-		}
+		},
 
+		Features: function (productId, optionId) {
+			if (productId !== undefined && productId !== "" && optionId !== undefined && optionId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId)
+						for (var dataIndex1 = 0; dataIndex1 < this._ProductData[dataIndex].Options.length; dataIndex1++)
+							if (this._ProductData[dataIndex].Options[dataIndex1].Id == optionId)
+								return this._ProductData[dataIndex].Options[dataIndex1].Features;
+
+			return null;
+		},
+
+		Options: function (productId) {
+			if (productId !== undefined && productId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId) {
+						var options = this._ProductData[dataIndex].Options;
+						//options.Features = null;
+						return options;
+					}
+
+			return null;
+		},
 	};
 
 	function parseColor(color) {
