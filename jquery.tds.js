@@ -671,6 +671,15 @@
 			});
 
 		},
+		
+		Look: function (renderObject) {
+			if (renderObject === undefined)
+				return btoa(this._RenderObject);
+			else {
+				this._RenderObject = atob(renderObject);
+				this._createRenderObject();
+			}
+		},
 
 		SpecificRender: function (isSpecitic) {
 			if (isSpecitic !== undefined) {
