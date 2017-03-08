@@ -1,7 +1,7 @@
 /*!
  * jQuery tds.tailori plugin
- * Original author: @Sagar Narayane
- * Further changes, comments:
+ * Original Author: @Sagar Narayane
+ * Further Changes, comments:
  * Licensed under the Textronics Design System pvt. ltd.
  */
 ;
@@ -39,7 +39,7 @@
 		_BlockedDetails: new Object(),
 		_CurrentBlockedFeatures: Array(),
 		_CurrentBlockedDetails: Array(),
-		_RenderObject: new Array(),
+		_RenderObject: new Object(),
 		_Alignments: new Array(),
 		_CurrentAlignmentIndex: 0,
 		_Swatch: "",
@@ -357,8 +357,8 @@
 						$("[data-tds-key='" + detail + "']").addClass("block");
 					}
 				}
-
-			}
+			
+			}		
 			this._createUrl();
 		},
 
@@ -671,14 +671,62 @@
 			});
 
 		},
-		
-		Look: function (renderObject) {
-			if (renderObject === undefined)
-				return btoa(this._RenderObject);
-			else {
-				this._RenderObject = atob(renderObject);
+
+		Look: function (rawRenderData) {
+			if (rawRenderData === undefined) {
+				var lookData = {
+					'RO': this._RenderObject,
+					'BF': this._CurrentBlockedFeatures,
+					'BD': this._CurrentBlockedDetails,
+					'S': this._Swatch,
+					'C': this._Color,
+					'MP': this._MonogramPlacement,
+					'MC': this._MonogramColor,
+					'MF': this._MonogramFont,
+					'MT': this._MonogramText,
+					'AI': this._CurrentAlignmentIndex
+				};
+				var image = null;
+				$.ajax({
+					url: "http://textronic.online/api_stylior/v1/img?" + this._Url,
+					type: "GET",
+
+					processData: false,
+					async: false,
+					success: function (result) {
+						image = result;
+					}
+				});
+				return {
+					'Data': btoa(JSON.stringify(lookData)),
+					Image: image
+				};
+			} else {
+				var lookData = JSON.parse(atob(rawRenderData));
+				//console.log(a);
+				this._RenderObject = lookData.RO;
+				this._CurrentBlockedFeatures = lookData.BF;
+				this._CurrentBlockedDetails = lookData.BD;
+				this._Swatch = lookData.S;
+				this._Color = lookData.C;
+				this._MonogramPlacement = lookData.MP;
+				this._MonogramColor = lookData.MC;
+				this._MonogramFont = lookData.MF;
+				this._MonogramText = lookData.MT;
+				this._CurrentAlignmentIndex = lookData.AI;
 				this._createRenderObject();
 			}
+		},
+
+		_dataURItoBlob: function (dataURI) {
+			var binary = atob(dataURI.split(',')[1]);
+			var array = [];
+			for (var i = 0; i < binary.length; i++) {
+				array.push(binary.charCodeAt(i));
+			}
+			return new Blob([new Uint8Array(array)], {
+				type: 'image/png'
+			});
 		},
 
 		SpecificRender: function (isSpecitic) {

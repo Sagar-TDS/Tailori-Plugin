@@ -8,12 +8,23 @@
 <script src = "jquery.tds.js">  </script>
  <script>
 var obj =null;
+
+var look = null;
 function GetSummary(){
 	console.log( obj.Summary());
 }
 
 function GetProduct(){
 	obj.Product($("#product-info").val());
+}
+
+function GetLook(){
+look= obj.Look().Data;
+
+}
+
+function SetLook(){
+obj.Look(look);
 }
 
 	$(document).ready(function () {
@@ -35,7 +46,7 @@ function GetProduct(){
 			'FeatureCallback': function(){
 				//alert($(this).attr("data-tds-key"));
 				
-				console.log(abc);
+			//	console.log(abc);
 				
 			},
 			'RenderCallback':function(a){
@@ -54,7 +65,9 @@ function GetProduct(){
 		//obj.SpecificRender(true);		// Get if true Specific Rendered Image else full rendered image
 		//obj.ResetContrast();
 		//obj.ResetProduct();
-
+		//obj.Features();
+		//obj.Options();
+		//obj.Look();
 
 
 
@@ -302,6 +315,9 @@ function GetProduct(){
 				
 				<button type="button" onclick="GetProduct()" class="btn btn-default">Change Product</button>
 				
+				<button type="button" onclick="GetLook()" class="btn btn-default">Get Look</button>
+				
+				<button type="button" onclick="SetLook()" class="btn btn-default">Set Look</button>
 				</div>
 			<div  class="row">
 			<div  class="col-sm-2 col-md-2" id = "div-1"></div>
