@@ -25,7 +25,7 @@
 		this.Alignments = new Array();
 		this.CurrentAlignmentIndex = 0;*/
 		this.metadata = this.$element.data(tdsTailoriPlugin.toLowerCase() + "-options");
-		this._name = tdsTailoriPlugin
+		this._name = tdsTailoriPlugin;
 			this.init();
 
 	}
@@ -68,13 +68,12 @@
 			MonogramTemplate: "",
 			ServiceUrl: "http://localhost:57401",
 			AutoSpecific: true,
-			AutoAlignment: true,
-			Monogram: true,
-			ProductCallback: "",
-			OptionCallback: "",
-			FeatureCallback: "",
-			ContrastCallback: "",
-			RenderCallback: ""
+			AutoAlignment: true,			
+			OnProductChange: "",
+			OnOptionChange: "",
+			OnFeatureChange: "",
+			OnContrastChange: "",
+			OnRenderChange: ""
 		},
 
 		init: function () {
@@ -88,7 +87,7 @@
 
 		_privateMethod: function () {
 			// some logic
-			alert("private")
+			alert("private");
 		},
 
 		_setCofiguration: function (type) {
@@ -121,7 +120,9 @@
 							this._CurrentAlignmentIndex = key;
 					}
 
-					if (that.Option("Monogram")) {
+					var monogram =  that.Option("MonogramTemplate");
+					
+					if (monogram!== undefined && monogram!=="") {
 						var template = $.templates(that.Option('MonogramTemplate'));
 						var htmlOutput = template.render(data);
 						$(that.Option('MonogramPlace')).html(htmlOutput);
@@ -167,7 +168,7 @@
 							that._createRenderObject(that._SpecificViewOf, $(this).attr("data-tds-element"));
 						}
 
-						var callback = that.Option("FeatureCallback");
+						var callback = that.Option("OnFeatureChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-element"));
 					});
@@ -203,7 +204,7 @@
 							}
 						}
 
-						var callback = that.Option("OptionCallback");
+						var callback = that.Option("OnOptionChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-option"));
 					});
@@ -271,7 +272,7 @@
 							}
 						}
 
-						var callback = that.Option("ProductCallback");
+						var callback = that.Option("OnProductChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-product"));
 					});
@@ -279,7 +280,7 @@
 					$("body").on("click", "[data-tds-contrast]", function () {
 
 						that._setContrast($(this).attr("data-tds-key"), $(this).attr("data-tds-contrast"));
-						var callback = that.Option("ContrastCallback");
+						var callback = that.Option("OnContrastChange");
 						if (typeof callback == 'function')
 							callback.call(this);
 					});
@@ -497,7 +498,7 @@
 							this._IsSpecific = false;
 							this._createUrl();
 						} else {
-							var callback = this.Option("RenderCallback");
+							var callback = this.Option("OnRenderChange");
 							if (typeof callback == 'function')
 								callback.call(this, imagesArray);
 						}
@@ -632,7 +633,7 @@
 
 		},
 
-		Summary: function (renderObject) {
+		Summary: function () {
 			/*if (renderObject === undefined)
 			return btoa(this._RenderObject);
 			else {
