@@ -62,7 +62,7 @@
 			ProductTemplate: "",
 			OptionTemplate: "",
 			OptionsPlace: "",
-			IsOptionVisible: false,
+			IsOptionVisible: true,
 			FeatureTemplate: "",
 			FeaturesPlace: "",
 			MonogramTemplate: "",
@@ -176,17 +176,24 @@
 						var productId = $(this).data("tds-key");
 						var optionId = $(this).data("tds-option");
 						var featureTmpl = that.Option("FeatureTemplate");
-						var featureUiId = that.Option("FeaturesPlace");
+						var featureUiId = that.Option("FeaturesPlace");						
 						if (featureTmpl != "" && featureUiId != "" && productId !== undefined && productId !== "" && optionId !== undefined && optionId !== "") {
 							var features = null;
 
 							for (var dataIndex = 0; dataIndex < that._ProductData.length; dataIndex++)
-								if (that._ProductData[dataIndex].Id == productId)
+								if (that._ProductData[dataIndex].Id == productId){
+									if(optionId=="contrast"){
+										features =that._ProductData[dataIndex].Contrasts;
+										break;
+									}
+									else{
 									for (var dataIndex1 = 0; dataIndex1 < that._ProductData[dataIndex].Options.length; dataIndex1++)
 										if (that._ProductData[dataIndex].Options[dataIndex1].Id == optionId) {
 											features = that._ProductData[dataIndex].Options[dataIndex1].Features;
 											break;
 										}
+									}
+								}
 							if (features != null) {
 								var template1 = $.templates(featureTmpl);
 								var htmlOutput1 = template1.render({
@@ -207,14 +214,20 @@
 							var optionTmpl = that.Option("OptionTemplate");
 							var optionUiId = that.Option("OptionsPlace");
 							if (optionTmpl != "" && optionUiId != "" && productId !== undefined && productId !== "") {
-								var options = null;
+								var options = [];								
 								for (var dataIndex = 0; dataIndex < that._ProductData.length; dataIndex++)
 									if (that._ProductData[dataIndex].Id == productId) {
-										options = that._ProductData[dataIndex].Options;
+										options =  $.merge([],  that._ProductData[dataIndex].Options);
+										if(that._ProductData[dataIndex].Contrasts.length >0)
+											options.push({
+												Id : "tds-contrast",
+												Name : "Contrast",                                                                                          
+												DataAttr : " data-tds-option='contrast' data-tds-key='" + productId + "'"
+											});
 										break;
 									}
 								if (options != null) {
-									if (options.length > 1) {
+									if (options.length > 1 ) {
 										var template1 = $.templates(optionTmpl);
 										var htmlOutput1 = template1.render({
 												"Options": options
@@ -464,7 +477,7 @@
 				this._createUrl();
 			} else
 				$.getJSON({
-					url: "http://textronic.online/api_stylior/v1/imgs?" + this._Url,
+					url: this.Option("ServiceUrl") + "/v1/imgs?" + this._Url,
 					context: this,
 					success: function (data) {
 						//console.log(data);
@@ -688,7 +701,7 @@
 				};
 				var image = null;
 				$.ajax({
-					url: "http://textronic.online/api_stylior/v1/img?" + this._Url,
+					url: this.Option("ServiceUrl") + "/v1/img?" + this._Url,
 					type: "GET",
 
 					processData: false,
@@ -766,13 +779,24 @@
 			if (productId !== undefined && productId !== "")
 				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
 					if (this._ProductData[dataIndex].Id == productId) {
-						var options = this._ProductData[dataIndex].Options;
-						//options.Features = null;
+						var options =  $.merge([], this._ProductData[dataIndex].Options);						
 						return options;
 					}
 
 			return null;
 		},
+		
+		Contrasts: function (productId) {
+			if (productId !== undefined && productId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId) {
+						var contrast = this._ProductData[dataIndex].Contrasts;						
+						return contrast;
+					}
+
+			return null;
+		},
+		
 	};
 
 	function parseColor(color) {
@@ -1012,3 +1036,4 @@
 		}
 	}
 })(window.jQuery, window, document);
+
