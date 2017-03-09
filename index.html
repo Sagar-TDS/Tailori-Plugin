@@ -8,12 +8,23 @@
 <script src = "jquery.tds.js">  </script>
  <script>
 var obj =null;
+
+var look = null;
 function GetSummary(){
 	console.log( obj.Summary());
 }
 
 function GetProduct(){
 	obj.Product($("#product-info").val());
+}
+
+function GetLook(){
+look= obj.Look().Data;
+
+}
+
+function SetLook(){
+obj.Look(look);
 }
 
 	$(document).ready(function () {
@@ -27,15 +38,15 @@ function GetProduct(){
 			'ProductTemplate':'#theTmpl', //Tempalte id for Product
 			'ImageSource':'#img-div', //Container Id for place inages
 			'ServiceUrl':'https://textronic.online/WEB_API',
-			'AutoSpecific':false, //Auto specific view after selecting any feature
-			'AutoAlignment':false, //Auto alignment set according to selected element
-			'Monogram':false, //If monogram 
+			'AutoSpecific':true, //Auto specific view after selecting any feature
+			'AutoAlignment':true, //Auto alignment set according to selected element
+			'Monogram':true, //If monogram 
 			'MonogramTemplate':'#theTmplm', //Tempalte id for Monogram UI
 			'MonogramPlace':'#monoplace', // html containter for Monogram
 			'FeatureCallback': function(){
 				//alert($(this).attr("data-tds-key"));
 				
-				console.log(abc);
+			//	console.log(abc);
 				
 			},
 			'RenderCallback':function(a){
@@ -54,12 +65,12 @@ function GetProduct(){
 		//obj.SpecificRender(true);		// Get if true Specific Rendered Image else full rendered image
 		//obj.ResetContrast();
 		//obj.ResetProduct();
-
-
-
-
-
-
+		//obj.Features();
+		//obj.Options();
+		//obj.Look();
+		//data-tds-moption="text"  
+		//data-tds-alignment =<"next"/"previous"/ alignment Name >
+		//IsOptionVisible
 
 
 
@@ -302,6 +313,9 @@ function GetProduct(){
 				
 				<button type="button" onclick="GetProduct()" class="btn btn-default">Change Product</button>
 				
+				<button type="button" onclick="GetLook()" class="btn btn-default">Get Look</button>
+				
+				<button type="button" onclick="SetLook()" class="btn btn-default">Set Look</button>
 				</div>
 			<div  class="row">
 			<div  class="col-sm-2 col-md-2" id = "div-1"></div>
