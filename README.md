@@ -1,6 +1,6 @@
 # Tailori
 
-One Paragraph of project description goes here
+Textronics Tailori is a plugin that simplifies access to textronics serices functionality!
 
 It provides following features:
 * [Element Rendering](#)
@@ -42,7 +42,7 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 | -----------------------------------------------|:------------:| -------:|
 | ServiceUrl                                     | Url of textronics tailori api provided you| * |
 | Product                                        | Product Name | * | 
-| ProductTemplate                                | jsrender templare for rendering options/elements [See here]()| * |
+| ProductTemplate                                | jsrender templare for rendering options/elements | * |
 | ImageSource                                    | Image container where rendered images are placed (i.e. id, class or etc) if you want to manage rendered image by your own keep this empty |         |
 | OptionsPlace                                   | Conatainer for placing the ProductOptions | * * |         
 | OptionTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click coller or cuff or etc)             | * * |
