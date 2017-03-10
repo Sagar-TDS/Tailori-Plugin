@@ -5,3 +5,5 @@ before_script:
   - gem install awesome_bot
 script:
 - awesome_bot readme.md
+
+theme: jekyll-theme-architect
