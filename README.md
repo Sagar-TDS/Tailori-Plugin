@@ -1,6 +1,7 @@
+<img src="icon.png" align="right" />
 # Tailori
 
-Textronics Tailori is a plugin that simplifies access to textronics serices functionality!
+Textronics Tailori is a plugin that simplifies access to textronics services functionality!
 
 It provides following features:
 * [Element Rendering](#)
@@ -44,7 +45,7 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 | Product                                        | Product Name | * | 
 | ProductTemplate                                | jsrender templare for rendering options/elements | * |
 | ImageSource                                    | Image container where rendered images are placed (i.e. id, class or etc) if you want to manage rendered image by your own keep this empty |         |
-| OptionsPlace                                   | Conatainer for placing the ProductOptions | * * |         
+| OptionsPlace                                   | Conatainer for placing the ProductOptions | * 1 |         
 | OptionTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click coller or cuff or etc)             | * * |
 | FeaturesPlace                                   | Conatainer for placing the ProductOptions Feature | * * * |         
 | FeatureTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click half sleeve or full sleeve or etc)             | * * * |
