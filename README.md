@@ -1,4 +1,5 @@
 <img src="icon.png" align="right" />
+
 # Tailori
 
 Textronics Tailori is a plugin that simplifies access to textronics services functionality!
