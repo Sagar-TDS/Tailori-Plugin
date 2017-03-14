@@ -25,7 +25,7 @@
 		this.Alignments = new Array();
 		this.CurrentAlignmentIndex = 0;*/
 		this.metadata = this.$element.data(tdsTailoriPlugin.toLowerCase() + "-options");
-		this._name = tdsTailoriPlugin
+		this._name = tdsTailoriPlugin;
 			this.init();
 
 	}
@@ -55,6 +55,7 @@
 		_SpecificViewOf: "",
 		_IsSpecific: false,
 		_ProductData: [],
+		_LibConfig: new Object,
 
 		defaults: {
 			Product: "Men-Shirt",
@@ -62,19 +63,20 @@
 			ProductTemplate: "",
 			OptionTemplate: "",
 			OptionsPlace: "",
-			IsOptionVisible: true,
+			IsOptionVisible: false,
 			FeatureTemplate: "",
 			FeaturesPlace: "",
 			MonogramTemplate: "",
+			Swatch:"",
 			ServiceUrl: "http://localhost:57401",
 			AutoSpecific: true,
-			AutoAlignment: true,
-			Monogram: true,
-			ProductCallback: "",
-			OptionCallback: "",
-			FeatureCallback: "",
-			ContrastCallback: "",
-			RenderCallback: ""
+			AutoAlignment: true,			
+			OnProductChange: "",
+			OnOptionChange: "",
+			OnFeatureChange: "",
+			OnContrastChange: "",
+			OnRenderChange: ""
+			
 		},
 
 		init: function () {
@@ -82,13 +84,14 @@
 			//alert(this.config["Product"]);
 			//this._privateMethod();
 			//this._setCofiguration(this.config["Product"]  this.Option("Product"), this.config["ProductTemplate"]);
+			this._Swatch = this.Option("Swatch");
 			this._setCofiguration(this.Option("Product"));
 			return this;
 		},
 
 		_privateMethod: function () {
 			// some logic
-			alert("private")
+			alert("private");
 		},
 
 		_setCofiguration: function (type) {
@@ -105,6 +108,7 @@
 					that._SpacificDisplay = data.SpecificDisplay;
 					that._SpacificLink = data.SpecificLink;
 					that._ProductData = data.Product;
+					that._LibConfig = data.LibraryConfig;
 					//data.SpecificLink = null;
 					//data.SpecificDisplay = null;
 					//data.Alignments = null;
@@ -116,12 +120,14 @@
 						});
 					this.$element.html(htmlOutput);
 
-					for (var key in this._Alignments) {
+					for (var key in this._Alignments) {					
 						if (this._Alignments[key].toLowerCase() == "face")
 							this._CurrentAlignmentIndex = key;
 					}
 
-					if (that.Option("Monogram")) {
+					var monogram =  that.Option("MonogramTemplate");
+					
+					if (monogram!== undefined && monogram!=="") {
 						var template = $.templates(that.Option('MonogramTemplate'));
 						var htmlOutput = template.render(data);
 						$(that.Option('MonogramPlace')).html(htmlOutput);
@@ -167,7 +173,7 @@
 							that._createRenderObject(that._SpecificViewOf, $(this).attr("data-tds-element"));
 						}
 
-						var callback = that.Option("FeatureCallback");
+						var callback = that.Option("OnFeatureChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-element"));
 					});
@@ -203,7 +209,7 @@
 							}
 						}
 
-						var callback = that.Option("OptionCallback");
+						var callback = that.Option("OnOptionChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-option"));
 					});
@@ -221,7 +227,7 @@
 										if(that._ProductData[dataIndex].Contrasts.length >0)
 											options.push({
 												Id : "tds-contrast",
-												Name : "Contrast",                                                                                          
+												Name : "Contrast",         
 												DataAttr : " data-tds-option='contrast' data-tds-key='" + productId + "'"
 											});
 										break;
@@ -271,7 +277,7 @@
 							}
 						}
 
-						var callback = that.Option("ProductCallback");
+						var callback = that.Option("OnProductChange");
 						if (typeof callback == 'function')
 							callback.call(this, $(this).data("tds-product"));
 					});
@@ -279,7 +285,7 @@
 					$("body").on("click", "[data-tds-contrast]", function () {
 
 						that._setContrast($(this).attr("data-tds-key"), $(this).attr("data-tds-contrast"));
-						var callback = that.Option("ContrastCallback");
+						var callback = that.Option("OnContrastChange");
 						if (typeof callback == 'function')
 							callback.call(this);
 					});
@@ -430,6 +436,7 @@
 
 				if (swatch !== "")
 					this._Url += "part=" + this._RenderObject[key].Id + swatch + "/";
+				else
 				this._Url += "part=" + this._RenderObject[key].Id + "/";
 				for (var contrastKey in this._RenderObject[key].Contrast) {
 					var cSwatch = this._RenderObject[key].Contrast[contrastKey].Swatch;
@@ -497,7 +504,7 @@
 							this._IsSpecific = false;
 							this._createUrl();
 						} else {
-							var callback = this.Option("RenderCallback");
+							var callback = this.Option("OnRenderChange");
 							if (typeof callback == 'function')
 								callback.call(this, imagesArray);
 						}
@@ -601,11 +608,18 @@
 					return this._Swatch;
 			}
 
+			if(this._LibConfig.hasOwnProperty(this._SpecificViewOf)){
+				this._LibConfig[this._SpecificViewOf].Swatch = id;
+				this._RenderObject[this._SpecificViewOf].Swatch = id
+				
+			}
+			else{
 			var color = parseColor(id);
 			if (color === undefined)
 				this._Swatch = id;
 			else
 				this._Color = color;
+			}
 			this._createUrl();
 			//alert( id);
 		},
@@ -632,7 +646,7 @@
 
 		},
 
-		Summary: function (renderObject) {
+		Summary: function () {
 			/*if (renderObject === undefined)
 			return btoa(this._RenderObject);
 			else {
@@ -671,7 +685,7 @@
 				"Contrast": selectedContrast,
 				"Swatch": selectedTextures
 			};
-			console.log(a);
+			/*console.log(a);
 			$.post({
 				url: this.Option("ServiceUrl") + "/api/products",
 				data: a,
@@ -681,7 +695,22 @@
 				fail: function () {
 					//alert(0);
 				}
+			});*/			
+			var returnData = null;
+
+			$.ajax({
+				type: 'POST',
+				url: this.Option("ServiceUrl") + "/api/products",
+				data: a,
+				async:false,				
+				success: function (data1) {
+					returnData= data1;
+				},
+				fail: function () {
+					//alert(0);
+				}			
 			});
+			return returnData;
 
 		},
 
