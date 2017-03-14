@@ -40,15 +40,15 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 
 ## Properties
 | Props                                          | Description  | Required
-| -----------------------------------------------|:------------:| -------:|
+| -----------------------------------------------|------------| -------:|
 | ServiceUrl                                     | Url of textronics tailori api provided you| * |
 | Product                                        | Product Name | * | 
 | ProductTemplate                                | jsrender templare for rendering options/elements | * |
 | ImageSource                                    | Image container where rendered images are placed (i.e. id, class or etc) if you want to manage rendered image by your own keep this empty |         |
-| OptionsPlace                                   | Conatainer for placing the ProductOptions | * 1 |         
-| OptionTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click coller or cuff or etc)             | * * |
-| FeaturesPlace                                   | Conatainer for placing the ProductOptions Feature | * * * |         
-| FeatureTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click half sleeve or full sleeve or etc)             | * * * |
+| OptionsPlace                                   | Conatainer for placing the ProductOptions | * <sup><sup>1</sup></sup> |         
+| OptionTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click coller or cuff or etc)             | * <sup><sup>1</sup></sup> |
+| FeaturesPlace                                   | Conatainer for placing the ProductOptions Feature | * <sup><sup>2</sup></sup> |         
+| FeatureTemplate                                 | if you want to show Options dynamic give template id of option here (it will render html contains dynamic after click on **product** i.e. click half sleeve or full sleeve or etc)             | * <sup><sup>2</sup></sup> |
 | IsOptionVisible                                 | If *true* ProductOptions are visible on page *else* ProductOptions Features will shown   |         |
 | MonogramTemplate                               | Conatainer for placing the monogram options   |         |
 | AutoSpecific                                   | if *true* detailed view of specific part is automaticaly renderd *else* not   |         |
@@ -56,7 +56,7 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 
 ## Data Attributes
 | Data Attribute       | Description                                                    |
-| ---------------------|:--------------------------------------------------------------:|
+| ---------------------|:--------------------------------------------------------------|
 | data-tds-alignment   | Possible values are "next"/"previous" and  alignment Name |
 | data-tds-moption   | if value is ***text*** it used for input box for accept input text for monogram |
 |			| if value is ***priview*** it used for img tag for displaying priview of monogram |
@@ -64,7 +64,7 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 
 ## Callbacks
 | Callback             | Description                                                    
-| ---------------------|:--------------------------------------------------------------:|
+| ---------------------|:--------------------------------------------------------------|
 | OnProductChange      | This callback fire when user click on Product i.e. Coller, Cuff, Sleeves, etc and this callback have one parameter i.e id of Product |
 | OnOptionChange       | This callback fire when user click on ProductOption i.e. High Coller, Low Coller, etc and this callback have one parameter i.e id of ProductOption  |
 | OnFeatureChange      | This callback fire when user click on ProductOptions Feature i.e. Half Sleeve, Full Sleeve etc and this callback have one parameter i.e id of ProductOptions Feaure |
