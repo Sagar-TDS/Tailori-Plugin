@@ -75,7 +75,7 @@
 			OnOptionChange: "",
 			OnFeatureChange: "",
 			OnContrastChange: "",
-			OnRenderChange: ""
+			OnRenderImageChange: ""
 			
 		},
 
@@ -504,7 +504,7 @@
 							this._IsSpecific = false;
 							this._createUrl();
 						} else {
-							var callback = this.Option("OnRenderChange");
+							var callback = this.Option("OnRenderImageChange");
 							if (typeof callback == 'function')
 								callback.call(this, imagesArray);
 						}
