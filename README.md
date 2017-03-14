@@ -69,7 +69,7 @@ Add **jquery.tds.js** to your project. [Download](https://github.com/Sagar-TDS/T
 | OnOptionChange       | This callback fire when user click on ProductOption i.e. High Coller, Low Coller, etc and this callback have one parameter i.e id of ProductOption  |
 | OnFeatureChange      | This callback fire when user click on ProductOptions Feature i.e. Half Sleeve, Full Sleeve etc and this callback have one parameter i.e id of ProductOptions Feaure |
 | OnContrastChange     | This callback fire when user click on Contrast  |
-| OnRenderChange       | This callback fire when rendered images are ready to display i.e. after changing he element when result is get from textronics api also this callback have one parameter which array type (*if you want to render image by yourself then use this parameter and then there no need to give **ImageSource** option in plugin initialization )* |
+| OnRenderChange       | This callback fire when rendered images are ready to display i.e. after changing he element when result is get from textronics api also this callback have one parameter which array type (*if you want to render image by yourself then use this parameter and then there no need to give <b>ImageSource</b> option in plugin initialization* ) |
 
 Public methods in plugin
 -------------------------
