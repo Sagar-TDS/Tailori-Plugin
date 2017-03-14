@@ -17,7 +17,7 @@ It provides following features:
 
 [Click here](https://sagar-tds.github.io/Tailori-Plugin) for live demo.
 
-#Dependency
+# Dependency
 
 The plugin has hard dependency on [jsrender.js](https://www.jsviews.com). You can download it from [here](https://www.jsviews.com/download/jsrender.min.js) (To download, right-click and select “Save as…” from the menu).
 
