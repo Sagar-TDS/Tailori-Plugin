@@ -75,12 +75,8 @@
 			OnOptionChange: "",
 			OnFeatureChange: "",
 			OnContrastChange: "",
-<<<<<<< HEAD
 			OnRenderImageChange: ""
-=======
-			OnRenderChange: ""
->>>>>>> origin/master
-			
+
 		},
 
 		init: function () {
@@ -508,11 +504,8 @@
 							this._IsSpecific = false;
 							this._createUrl();
 						} else {
-<<<<<<< HEAD
-							var callback = this.Option("OnRenderImageChange");
-=======
-							var callback = this.Option("OnRenderChange");
->>>>>>> origin/master
+
+							var callback = this.Option("OnRenderImageChange");							
 							if (typeof callback == 'function')
 								callback.call(this, imagesArray);
 						}
