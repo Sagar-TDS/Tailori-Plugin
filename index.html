@@ -30,8 +30,6 @@ obj.Look(look);
 	$(document).ready(function () {
 		//alert("hi")
 
-		
-		
 		 obj = $("#div-1").tailori(
 		{
 			'Product':'MEN-SHIRT',   //Product i.e men shirt,women shirt, men suit, etc
@@ -43,16 +41,18 @@ obj.Look(look);
 			'Monogram':true, //If monogram 
 			'MonogramTemplate':'#theTmplm', //Tempalte id for Monogram UI
 			'MonogramPlace':'#monoplace', // html containter for Monogram
-			'FeatureCallback': function(){
-				//alert($(this).attr("data-tds-key"));
-				
-			//	console.log(abc);
-				
+			'OnProductChange': function(){			
+				$("#sec").empty();
+				var data= obj.SpecificDetails();
+				for(var i in data ){
+						$("#sec").append('<tr id="'+data[i].Id+'" ><td><span class="glyphicon glyphicon-chevron-right"></span><a href="#">'+data[i].Name+'</a></td></tr>');
+					}					
+					$("#sec tr").click(function(){				
+						obj.SpecificRender(this.id);			
+					});
 			},
-			'RenderCallback':function(a){
-				console.log(a);
-				//console.log(b);
-			}
+			'OnRenderImageChange':function(a){			
+			}						
 			//OptionCallback
 		});
 
@@ -72,17 +72,6 @@ obj.Look(look);
 		//data-tds-alignment =<"next"/"previous"/ alignment Name >
 		//IsOptionVisible
 
-
-
-
-
-
-
-
-
-
-		
-		
 		//obj.Texture("red");	
 		//obj.tailori("SetFabric","ABC");//alert("bye")
 		//
@@ -126,6 +115,7 @@ obj.Look(look);
 
  </script>
 <script id="theTmpl2" type="text/x-jsrender">
+
 <ul>
 	{{for Product}}
       <li ><img style="max-width:30px;" src="{{:ImageSource}}">{{:Name}} is  <b>{{:Id}} </b></li>
@@ -186,10 +176,7 @@ obj.Look(look);
 										<span class="glyphicon glyphicon-chevron-right"></span><a href="#">{{:Name}}</a>
 									</td>
 								</tr>
-							{{/for}}
-							
-							
-							
+							{{/for}}							
 						{{/for}}
 						{{for Contrasts}}		
 								<tr id="{{:Id}}">
@@ -270,7 +257,7 @@ obj.Look(look);
 											<ul class="the-icons clearfix" id="monogram-font">
 											
 											{{for MonogramFont}}                            
-											<li id="{{:Id}}"><img class="img-polaroid" src="image/ProductImages/129b90f7-fac2-44f2-a8b5-707c263faa75.jpg">{{:Name}}</li>
+											<li id="{{:Id}}"><img class="img-polaroid" src="{{:ImageSource}}">{{:Name}}</li>
 											
 											{{/for}}																															
 											</ul>
@@ -281,7 +268,7 @@ obj.Look(look);
 												Color</label>
 											<ul class="the-icons clearfix" id="monogram-color">
 											{{for MonogramColor}}                            
-											<li id="{{:Id}}"><img class="img-polaroid" src="image/ProductImages/129b90f7-fac2-44f2-a8b5-707c263faa75.jpg">{{:Name}}</li>											
+											<li id="{{:Id}}"><img class="img-polaroid" src="{{:ImageSource}}">{{:Name}}</li>											
 											{{/for}}																															
 											</ul>
 										</div>
@@ -322,6 +309,7 @@ obj.Look(look);
 			<div class="col-sm-2 col-md-2"> 
 				<table class="table" style="height: 300px; display: block; overflow: auto;"><tbody id="fabrics"></tbody></table>				
 				<table class="table"  style="height: 300px; display: block; overflow: auto;"><tbody id="fabrics1"></tbody></table>
+				<table class="table"  style="height: 300px; display: block; overflow: auto;"><tbody id="sec"></tbody></table>
 			</div>
 			<div class="col-sm-3 col-md-3" id="monoplace" >
 				
