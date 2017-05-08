@@ -64,7 +64,7 @@
 			ServiceUrl: "http://localhost:57401",
 			AutoSpecific: true,
 			AutoAlignment: true,
-			ImageSize:"",
+			ImageSize: "",
 			OnProductChange: "",
 			OnProductDetailChange: "",
 			OnOptionChange: "",
@@ -474,11 +474,11 @@
 				if (this._SelectedAlignment.toLowerCase() == "face")
 					this._Url += monoUrl;
 				this._Url += "view=" + this._SelectedAlignment;
-				
-				for(var index in this._Alignments)
-					if(this._Alignments[index]==this._SelectedAlignment)
+
+				for (var index in this._Alignments)
+					if (this._Alignments[index] == this._SelectedAlignment)
 						this._CurrentAlignmentIndex = index;
-				
+
 			}
 			if (this._IsSpecific)
 				this._Url += "/type=3"
@@ -508,13 +508,13 @@
 							for (var url in data) {
 								if (data[url] != "") {
 									if (imgSrc !== undefined) {
-										
+
 										var h = $(imgSrc).css("height");
 										h = h.replace("px", "");
-										
-										if(this.ImageSize=="")
-											h= this.Option('ImageSize');
-										
+
+										if (this.ImageSize == "")
+											h = this.Option('ImageSize');
+
 										$(imgSrc).append("<img src='" + data[url] + "?h=" + h + "&scale=both'>");
 									}
 									imagesArray.push(data[url]);
@@ -654,298 +654,295 @@
 							falseArray.push(this._LibConfig[key].Options[key1]);
 						}
 				}
-
-				}
 			}
-		}
 
-		if (!isFound)
-			for (var key in this._RenderObject) {
-				if (falseArray.indexOf(key) === -1) {
-					this._RenderObject[key].Swatch = id
+			if (!isFound)
+				for (var key in this._RenderObject) {
+					if (falseArray.indexOf(key) === -1) {
+						this._RenderObject[key].Swatch = id
+					}
 				}
-			}
 			this._createUrl();
 
-		if (!isFound) {
+			if (!isFound) {
+				var color = parseColor(id);
+				if (color === undefined)
+					this._Swatch = id;
+				else
+					this._Color = color;
+			}
+			this._createUrl();
+			//alert( id);
+		},
+
+		ContrastTexture: function (id) {
+			if (id === undefined)
+				return;
 			var color = parseColor(id);
 			if (color === undefined)
-				this._Swatch = id;
+				color = "";
 			else
-				this._Color = color;
-		}
-		this._createUrl();
-		//alert( id);
-	},
+				id = "";
 
-	ContrastTexture: function (id) {
-		if (id === undefined)
-			return;
-		var color = parseColor(id);
-		if (color === undefined)
-			color = "";
-		else
-			id = "";
-
-		if (this._RenderObject[this._CurrentDetail].Contrast.hasOwnProperty(this._CurrentContrastNo)) {
-			this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo].Swatch = id;
-			this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo].Color = color;
-		} else {
-			this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo] = {
-				Swatch: id,
-				Color: color
-			};
-		}
-		this._createUrl();
-
-	},
-
-	Summary: function () {
-		var selectedElements = new Array();
-
-		var selectedContrast = new Array();
-
-		var selectedTextures = new Array();
-
-		selectedTextures.push({
-			'Detail': 'All',
-			'ContrastNo': '0',
-			'FabricId': this._Swatch,
-			'Color': this._Color
-		});
-
-		for (var key in this._RenderObject) {
-			selectedElements.push(this._RenderObject[key].Id);
-			for (var contrastKey in this._RenderObject[key].Contrast) {
-				selectedContrast.push({
-					'Detail': key,
-					'ContrastNo': contrastKey,
-					'FabricId': this._RenderObject[key].Contrast[contrastKey].Swatch,
-					'Color': this._RenderObject[key].Contrast[contrastKey].Color
-				});
-
+			if (this._RenderObject[this._CurrentDetail].Contrast.hasOwnProperty(this._CurrentContrastNo)) {
+				this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo].Swatch = id;
+				this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo].Color = color;
+			} else {
+				this._RenderObject[this._CurrentDetail].Contrast[this._CurrentContrastNo] = {
+					Swatch: id,
+					Color: color
+				};
 			}
+			this._createUrl();
 
-		}
-		var a = {
-			"Product": selectedElements,
-			"Contrast": selectedContrast,
-			"Swatch": selectedTextures
-		};
-		var returnData = null;
+		},
 
-		$.ajax({
-			type: 'POST',
-			url: this.Option("ServiceUrl") + "/api/products",
-			data: a,
-			async: false,
-			success: function (data1) {
-				returnData = data1;
-			},
-			fail: function () {}
-		});
-		return returnData;
+		Summary: function () {
+			var selectedElements = new Array();
 
-	},
+			var selectedContrast = new Array();
 
-	Look: function (rawRenderData) {
-		if (rawRenderData === undefined) {
-			var lookData = {
-				'RO': this._RenderObject,
-				'BF': this._CurrentBlockedFeatures,
-				'BD': this._CurrentBlockedDetails,
-				'S': this._Swatch,
-				'C': this._Color,
-				'MP': this._MonogramPlacement,
-				'MC': this._MonogramColor,
-				'MF': this._MonogramFont,
-				'MT': this._MonogramText,
-				'AI': this._CurrentAlignmentIndex
-			};
-			var image = null;
-			$.ajax({
-				url: this.Option("ServiceUrl") + "/v1/img?" + this._Url,
-				type: "GET",
+			var selectedTextures = new Array();
 
-				processData: false,
-				async: false,
-				success: function (result) {
-					image = result;
-				}
+			selectedTextures.push({
+				'Detail': 'All',
+				'ContrastNo': '0',
+				'FabricId': this._Swatch,
+				'Color': this._Color
 			});
-			return {
-				'Data': btoa(JSON.stringify(lookData)),
-				Image: image
+
+			for (var key in this._RenderObject) {
+				selectedElements.push(this._RenderObject[key].Id);
+				for (var contrastKey in this._RenderObject[key].Contrast) {
+					selectedContrast.push({
+						'Detail': key,
+						'ContrastNo': contrastKey,
+						'FabricId': this._RenderObject[key].Contrast[contrastKey].Swatch,
+						'Color': this._RenderObject[key].Contrast[contrastKey].Color
+					});
+
+				}
+
+			}
+			var a = {
+				"Product": selectedElements,
+				"Contrast": selectedContrast,
+				"Swatch": selectedTextures
 			};
-		} else {
-			var lookData = JSON.parse(atob(rawRenderData));
+			var returnData = null;
 
-			this._RenderObject = lookData.RO;
-			this._CurrentBlockedFeatures = lookData.BF;
-			this._CurrentBlockedDetails = lookData.BD;
-			this._Swatch = lookData.S;
-			this._Color = lookData.C;
-			this._MonogramPlacement = lookData.MP;
-			this._MonogramColor = lookData.MC;
-			this._MonogramFont = lookData.MF;
-			this._MonogramText = lookData.MT;
-			this._CurrentAlignmentIndex = lookData.AI;
-			this._createRenderObject("");
-		}
-	},
+			$.ajax({
+				type: 'POST',
+				url: this.Option("ServiceUrl") + "/api/products",
+				data: a,
+				async: false,
+				success: function (data1) {
+					returnData = data1;
+				},
+				fail: function () {}
+			});
+			return returnData;
 
-	_dataURItoBlob: function (dataURI) {
-		var binary = atob(dataURI.split(',')[1]);
-		var array = [];
-		for (var i = 0; i < binary.length; i++) {
-			array.push(binary.charCodeAt(i));
-		}
-		return new Blob([new Uint8Array(array)], {
-			type: 'image/png'
-		});
-	},
+		},
 
-	SpecificDetails: function () {
-		return this._SpecificDetails;
-	},
+		Look: function (rawRenderData) {
+			if (rawRenderData === undefined) {
+				var lookData = {
+					'RO': this._RenderObject,
+					'BF': this._CurrentBlockedFeatures,
+					'BD': this._CurrentBlockedDetails,
+					'S': this._Swatch,
+					'C': this._Color,
+					'MP': this._MonogramPlacement,
+					'MC': this._MonogramColor,
+					'MF': this._MonogramFont,
+					'MT': this._MonogramText,
+					'AI': this._CurrentAlignmentIndex
+				};
+				var image = null;
+				$.ajax({
+					url: this.Option("ServiceUrl") + "/v1/img?" + this._Url,
+					type: "GET",
 
-	SpecificRender: function (specific) {
-		if (specific === undefined)
-			return;
-		if (typeof specific == 'boolean') {
-			this._IsSpecific = specific;
-			this._createUrl();
-		} else if (typeof specific == 'string') {
-			for (var i = 0; i < this._ProductData.length; i++) {
-				if (this._ProductData[i].Id == specific)
-					this._SelectedAlignment = this._ProductData[i].Options[0].Features[0].Alignment;
+					processData: false,
+					async: false,
+					success: function (result) {
+						image = result;
+					}
+				});
+				return {
+					'Data': btoa(JSON.stringify(lookData)),
+					Image: image
+				};
+			} else {
+				var lookData = JSON.parse(atob(rawRenderData));
+
+				this._RenderObject = lookData.RO;
+				this._CurrentBlockedFeatures = lookData.BF;
+				this._CurrentBlockedDetails = lookData.BD;
+				this._Swatch = lookData.S;
+				this._Color = lookData.C;
+				this._MonogramPlacement = lookData.MP;
+				this._MonogramColor = lookData.MC;
+				this._MonogramFont = lookData.MF;
+				this._MonogramText = lookData.MT;
+				this._CurrentAlignmentIndex = lookData.AI;
+				this._createRenderObject("");
 			}
-			this._SpecificViewOf = specific;
-			this._IsSpecific = true;
-			this._createUrl();
-		}
+		},
 
-	},
-
-	ResetContrast: function () {
-		for (var key in this._RenderObject) {
-			for (var contrastKey in this._RenderObject[key].Contrast) {
-				this._RenderObject[key].Contrast[contrastKey].Swatch = "";
-				this._RenderObject[key].Contrast[contrastKey].Color = "";
+		_dataURItoBlob: function (dataURI) {
+			var binary = atob(dataURI.split(',')[1]);
+			var array = [];
+			for (var i = 0; i < binary.length; i++) {
+				array.push(binary.charCodeAt(i));
 			}
-		}
-	},
+			return new Blob([new Uint8Array(array)], {
+				type: 'image/png'
+			});
+		},
 
-	ResetProduct: function () {
-		this._CurrentBlockedFeatures = Array();
-		this._CurrentBlockedDetails = Array();
-		this._createRenderObject();
-	},
+		SpecificDetails: function () {
+			return this._SpecificDetails;
+		},
 
-	Features: function (productId, optionId) {
-		if (productId !== undefined && productId !== "" && optionId !== undefined && optionId !== "")
-			for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
-				if (this._ProductData[dataIndex].Id == productId)
-					for (var dataIndex1 = 0; dataIndex1 < this._ProductData[dataIndex].Options.length; dataIndex1++)
-						if (this._ProductData[dataIndex].Options[dataIndex1].Id == optionId)
-							return this._ProductData[dataIndex].Options[dataIndex1].Features;
-
-		return null;
-	},
-
-	Options: function (productId) {
-		if (productId !== undefined && productId !== "")
-			for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
-				if (this._ProductData[dataIndex].Id == productId) {
-					var options = $.merge([], this._ProductData[dataIndex].Options);
-					return options;
+		SpecificRender: function (specific) {
+			if (specific === undefined)
+				return;
+			if (typeof specific == 'boolean') {
+				this._IsSpecific = specific;
+				this._createUrl();
+			} else if (typeof specific == 'string') {
+				for (var i = 0; i < this._ProductData.length; i++) {
+					if (this._ProductData[i].Id == specific)
+						this._SelectedAlignment = this._ProductData[i].Options[0].Features[0].Alignment;
 				}
+				this._SpecificViewOf = specific;
+				this._IsSpecific = true;
+				this._createUrl();
+			}
 
-		return null;
-	},
+		},
 
-	Contrasts: function (productId) {
-		if (productId !== undefined && productId !== "")
-			for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
-				if (this._ProductData[dataIndex].Id == productId) {
-					var contrast = this._ProductData[dataIndex].Contrasts;
-					return contrast;
+		ResetContrast: function () {
+			for (var key in this._RenderObject) {
+				for (var contrastKey in this._RenderObject[key].Contrast) {
+					this._RenderObject[key].Contrast[contrastKey].Swatch = "";
+					this._RenderObject[key].Contrast[contrastKey].Color = "";
 				}
+			}
+		},
 
-		return null;
-	},
+		ResetProduct: function () {
+			this._CurrentBlockedFeatures = Array();
+			this._CurrentBlockedDetails = Array();
+			this._createRenderObject();
+		},
 
-};
+		Features: function (productId, optionId) {
+			if (productId !== undefined && productId !== "" && optionId !== undefined && optionId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId)
+						for (var dataIndex1 = 0; dataIndex1 < this._ProductData[dataIndex].Options.length; dataIndex1++)
+							if (this._ProductData[dataIndex].Options[dataIndex1].Id == optionId)
+								return this._ProductData[dataIndex].Options[dataIndex1].Features;
+
+			return null;
+		},
+
+		Options: function (productId) {
+			if (productId !== undefined && productId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId) {
+						var options = $.merge([], this._ProductData[dataIndex].Options);
+						return options;
+					}
+
+			return null;
+		},
+
+		Contrasts: function (productId) {
+			if (productId !== undefined && productId !== "")
+				for (var dataIndex = 0; dataIndex < this._ProductData.length; dataIndex++)
+					if (this._ProductData[dataIndex].Id == productId) {
+						var contrast = this._ProductData[dataIndex].Contrasts;
+						return contrast;
+					}
+
+			return null;
+		},
+
+	};
 
 	function parseColor(color) {
-	color = color.trim().toLowerCase();
-	color = _colorsByName[color] || color;
-	var hex3 = color.match(/^#([0-9a-f]{3})$/i);
-	if (hex3) {
-		return color.replace("#", "");
+		color = color.trim().toLowerCase();
+		color = _colorsByName[color] || color;
+		var hex3 = color.match(/^#([0-9a-f]{3})$/i);
+		if (hex3) {
+			return color.replace("#", "");
+		}
+		var hex6 = color.match(/^#([0-9a-f]{6})$/i);
+		if (hex6) {
+			return color.replace("#", "");
+		}
+		var rgba = color.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+.*\d*)\s*\)$/i) || color.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+		if (rgba) {
+			return hex(rgba[1]) + hex(rgba[2]) + hex(rgba[3]);
+		}
+		var rgb = color.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+		if (rgb) {
+			return hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+		}
+		if (color.indexOf('hsl') == 0)
+			return parseColor(_hslToRgb(color));
 	}
-	var hex6 = color.match(/^#([0-9a-f]{6})$/i);
-	if (hex6) {
-		return color.replace("#", "");
-	}
-	var rgba = color.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+.*\d*)\s*\)$/i) || color.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
-	if (rgba) {
-		return hex(rgba[1]) + hex(rgba[2]) + hex(rgba[3]);
-	}
-	var rgb = color.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
-	if (rgb) {
-		return hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-	}
-	if (color.indexOf('hsl') == 0)
-		return parseColor(_hslToRgb(color));
-}
 
 	function hex(x) {
-	return ("0" + parseInt(x).toString(16)).slice(-2);
-}
+		return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
 
 	function _hslToRgb(hsl) {
-	if (typeof hsl == 'string') {
-		hsl = hsl.match(/(\d+(\.\d+)?)/g);
-	}
-	var sub,
-	h = hsl[0] / 360,
-	s = hsl[1] / 100,
-	l = hsl[2] / 100,
-	a = hsl[3] === undefined ? 1 : hsl[3],
-	t1,
-	t2,
-	t3,
-	rgb,
-	val;
-	if (s == 0) {
-		val = Math.round(l * 255);
-		rgb = [val, val, val, a];
-	} else {
-		if (l < 0.5)
-			t2 = l * (1 + s);
-		else
-			t2 = l + s - l * s;
-		t1 = 2 * l - t2;
-		rgb = [0, 0, 0];
-		for (var i = 0; i < 3; i++) {
-			t3 = h + 1 / 3 *  - (i - 1);
-			t3 < 0 && t3++;
-			t3 > 1 && t3--;
-			if (6 * t3 < 1)
-				val = t1 + (t2 - t1) * 6 * t3;
-			else if (2 * t3 < 1)
-				val = t2;
-			else if (3 * t3 < 2)
-				val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
-			else
-				val = t1;
-			rgb[i] = Math.round(val * 255);
+		if (typeof hsl == 'string') {
+			hsl = hsl.match(/(\d+(\.\d+)?)/g);
 		}
+		var sub,
+		h = hsl[0] / 360,
+		s = hsl[1] / 100,
+		l = hsl[2] / 100,
+		a = hsl[3] === undefined ? 1 : hsl[3],
+		t1,
+		t2,
+		t3,
+		rgb,
+		val;
+		if (s == 0) {
+			val = Math.round(l * 255);
+			rgb = [val, val, val, a];
+		} else {
+			if (l < 0.5)
+				t2 = l * (1 + s);
+			else
+				t2 = l + s - l * s;
+			t1 = 2 * l - t2;
+			rgb = [0, 0, 0];
+			for (var i = 0; i < 3; i++) {
+				t3 = h + 1 / 3 *  - (i - 1);
+				t3 < 0 && t3++;
+				t3 > 1 && t3--;
+				if (6 * t3 < 1)
+					val = t1 + (t2 - t1) * 6 * t3;
+				else if (2 * t3 < 1)
+					val = t2;
+				else if (3 * t3 < 2)
+					val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
+				else
+					val = t1;
+				rgb[i] = Math.round(val * 255);
+			}
+		}
+		rgb.push(a);
+		return rgb;
 	}
-	rgb.push(a);
-	return rgb;
-}
 
 	var _colorsByName = {
 		aliceblue: "#f0f8ff",
@@ -1093,24 +1090,24 @@
 	Plugin.defaults = Plugin.prototype.defaults;
 
 	$.fn[tdsTailoriPlugin] = function (options) {
-	var args = arguments;
-	if (options === undefined || typeof options === "object") {
-		return this.each(function () {
-			if (!$.data(this, 'plugin_' + tdsTailoriPlugin)) {
-				$.data(this, 'plugin_' + tdsTailoriPlugin,
-					new Plugin(this, options));
-			}
-		}).data('plugin_' + tdsTailoriPlugin);
-	} else if (typeof options === "string" && options[0] !== "_" && options !== "init") {
-		var returns;
-		this.each(function () {
-			var instance = $.data(this, "plugin_" + tdsTailoriPlugin);
-			if (instance instanceof Plugin && typeof instance[options] === "function") {
-				//alert(6);
-				returns = instance[options].apply(instance, Array.prototype.slice.call(args, 1));
-			}
-		});
-		return returns !== undefined ? returns.data('plugin_' + tdsTailoriPlugin) : this.data('plugin_' + tdsTailoriPlugin);
+		var args = arguments;
+		if (options === undefined || typeof options === "object") {
+			return this.each(function () {
+				if (!$.data(this, 'plugin_' + tdsTailoriPlugin)) {
+					$.data(this, 'plugin_' + tdsTailoriPlugin,
+						new Plugin(this, options));
+				}
+			}).data('plugin_' + tdsTailoriPlugin);
+		} else if (typeof options === "string" && options[0] !== "_" && options !== "init") {
+			var returns;
+			this.each(function () {
+				var instance = $.data(this, "plugin_" + tdsTailoriPlugin);
+				if (instance instanceof Plugin && typeof instance[options] === "function") {
+					//alert(6);
+					returns = instance[options].apply(instance, Array.prototype.slice.call(args, 1));
+				}
+			});
+			return returns !== undefined ? returns.data('plugin_' + tdsTailoriPlugin) : this.data('plugin_' + tdsTailoriPlugin);
+		}
 	}
-}
-	})(window.jQuery, window, document);
+})(window.jQuery, window, document);
